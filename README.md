@@ -80,8 +80,7 @@ Thoughts or rationales in OpenChatML are represented as follows:
 A conversation in OpenChatML is represented as a sequence of messages, enclosed within `<s>` and `</s>` tokens:
 
 ```
-<s>
-<|im_start|>role1 [name=<name1>]
+<s><|im_start|>role1 [name=<name1>]
 message1
 <|im_end|>
 <|im_start|>role2 [name=<name2>]
@@ -118,8 +117,7 @@ Here are a few examples of OpenChatML structures:
 
 Example conversation:
 ```
-<s>
-<|im_start|>user
+<s><|im_start|>user
 Hello there, AI.
 <|im_end|>
 <|im_start|>assistant
@@ -130,8 +128,7 @@ Hi. Nice to meet you.
 
 Example conversation with speaker name:
 ```
-<s>
-<|im_start|>user name=Eric
+<s><|im_start|>user name=Eric
 Hello there, AI.
 <|im_end|>
 <|im_start|>assistant
@@ -147,8 +144,7 @@ Example fill-in-the-middle task:
 
 Example with thought block:
 ```
-<s>
-<|im_start|>user
+<s><|im_start|>user
 What is 17 * 34?
 <|im_end|>
 <|im_start|>assistant
@@ -177,8 +173,7 @@ Here are some more comprehensive examples showcasing various features and use ca
 
 Example: Named roles and longer conversation
 ```
-<s>
-<|im_start|>system name=GoalTracker
+<s><|im_start|>system name=GoalTracker
 You are an AI assistant that helps users track and achieve their goals.
 <|im_end|>
 <|im_start|>user name=Alice
