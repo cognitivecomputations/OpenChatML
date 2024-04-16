@@ -51,6 +51,8 @@ OpenChatML uses the following special tokens:
 - `<|fim_suffix|>`: After Cursor token, indicating the content after the cursor in a fill-in-the-middle task.
 - `<|fim_middle|>`: At Cursor token, indicating where the model should fill in content in a fill-in-the-middle task.
 - `<|file_separator|>`: File Separator token, used to separate content from different files within the same sequence.
+- `<|startofthought|>`: Start of Thought token, indicating the beginning of a thought or rationale.
+- `<|endofthought|>`: End of Thought token, indicating the end of a thought or rationale.
 
 ## 3. Message Structure
 Each message in OpenChatML is represented as follows:
@@ -65,7 +67,16 @@ message_content
 - `name` (optional): A string representing the name of the speaker. If present, it should be added after the role, in the format `name=<name>`. The name cannot contain whitespace.
 - `message_content`: The actual content of the message, which can span multiple lines.
 
-## 4. Conversation Structure
+## 4. Thought Structure
+OpenChatML introduces a new structure called the "thought block" to represent the chain of thought or reasoning steps that lead to a conclusion or response. This concept is inspired by the Quiet-STaR paper (Zelikman et al., 2022), which proposes a method for language models to generate rationales at each token to explain future text, improving their predictions. In OpenChatML, the thought block is enclosed within <|startofthought|> and <|endofthought|> tokens and contains the intermediate reasoning steps or considerations that the model uses to arrive at its final response. The purpose of the thought block is to provide insight into the model's decision-making process and to separate the reasoning from the conclusion. This structure allows for a clearer understanding of how the model generates its responses and can be useful for debugging, interpretability, and enhancing the model's performance on various tasks.
+
+Thoughts or rationales in OpenChatML are represented as follows:
+
+```
+<|startofthought|>thought_content<|endofthought|>
+```
+
+## 5. Conversation Structure
 A conversation in OpenChatML is represented as a sequence of messages, enclosed within `<s>` and `</s>` tokens:
 
 ```
@@ -80,7 +91,7 @@ message2
 </s>
 ```
 
-## 5. Fill-in-the-Middle Tasks
+## 6. Fill-in-the-Middle Tasks
 OpenChatML supports fill-in-the-middle (FIM) tasks where the model is asked to complete content given surrounding context. The FIM structure is represented as:
 
 ```
@@ -89,7 +100,7 @@ OpenChatML supports fill-in-the-middle (FIM) tasks where the model is asked to c
 
 The model should generate content to replace the `<|fim_middle|>` token, using `prefix_content` as the preceding context and `suffix_content` as the following context. The generated content should smoothly connect the prefix to the suffix.
 
-## 6. Multi-File Sequences
+## 7. Multi-File Sequences
 OpenChatML allows combining content from multiple files into a single sequence using the `<|file_separator|>` token:
 
 ```
@@ -102,7 +113,7 @@ file3_content
 
 The `<|file_separator|>` token is used to demarcate the boundaries between content from different files while keeping them as part of the same overall sequence. This can be useful for tasks involving multiple input sources.
 
-## 7. Examples
+## 8. Examples
 Here are a few examples of OpenChatML structures:
 
 Example conversation:
@@ -132,6 +143,24 @@ Hi Eric. Nice to meet you.
 Example fill-in-the-middle task:
 ```
 <|fim_prefix|>The capital of France is <|fim_middle|><|fim_suffix|>, which is known for its famous Eiffel Tower.
+```
+
+Example with thought block:
+```
+<s>
+<|im_start|>user
+What is 17 * 34?
+<|im_end|>
+<|im_start|>assistant
+<|startofthought|>To multiply 17 by 34, we can break it down:
+17 * 34 = 17 * (30 + 4)
+        = (17 * 30) + (17 * 4)
+        = 510 + 68
+        = 578
+<|endofthought|>
+17 * 34 = 578.
+<|im_end|>
+</s>
 ```
 
 Example multi-file sequence:
@@ -240,10 +269,14 @@ Completion:
 <|fim_suffix|> Despite their invisible interior, the presence of black holes can be inferred through their interaction with other matter and with electromagnetic radiation such as visible light. If there are other stars orbiting a black hole, their orbit can be used to determine the black hole's mass and location. Matter falling into a black hole can form an accretion disk, one of the brightest objects in the universe.
 ```
 
-## 8. Parsing and Generation
+## 9. Parsing and Generation
 When parsing OpenChatML, the following rules should be applied:
 - The `<s>`, `</s>`, `<|im_start|>`, `<|im_end|>`, `<|fim_prefix|>`, `<|fim_middle|>`, `<|fim_suffix|>`, and `<|file_separator|>` tokens are treated as special tokens and should not be considered part of the message content.
 - The `role` must be one of the predefined values: "system", "tool", "user", or "assistant".
 - The `name` attribute is optional and should be parsed if present.
 
 When generating OpenChatML, the same structure and rules should be followed to ensure compatibility and consistency.
+
+## 10. References
+- Fill In the Middle (FIM) https://arxiv.org/abs/2207.14255
+- Quiet Star (chain of thought) https://arxiv.org/abs/2403.09629
