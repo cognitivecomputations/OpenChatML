@@ -3,6 +3,45 @@
 ## 1. Introduction
 OpenChatML is a markup language designed for representing conversational data in a structured format. It provides a standardized way to encode chat messages, including the role of the speaker, the content of the message, and optional metadata such as the name of the speaker.
 
+1. Introduction
+
+1.1 Overview
+
+This document defines OpenChatML, a markup language for representing and exchanging conversational data in a standardized format. OpenChatML provides a structured approach to encode chat messages, including the role of the speaker, the content of the message, and optional metadata.
+
+1.2 Purpose
+
+The purpose of OpenChatML is to address the following challenges in the conversational AI domain:
+
+1. Lack of interoperability between different platforms, tools, and systems.
+2. Inconsistency in the representation of conversational data across various sources and target systems.
+3. Limited expressiveness in capturing the nuances and context of conversations.
+4. Difficulty in extending and evolving existing formats to meet the changing needs of the conversational AI community.
+
+1.3 Scope
+
+OpenChatML is designed to be a lightweight and flexible markup language for representing conversational data. It focuses on the core elements and structures necessary to capture the essence of conversations, while allowing for extensibility and customization.
+
+The specification defines the syntax and semantics of OpenChatML, including the special tokens, message structure, conversation structure, fill-in-the-middle tasks, and multi-file sequences. It also provides guidelines for parsing and generating OpenChatML data.
+
+1.4 Comparison to Other Specifications
+
+OpenChatML differs from other specifications in the following aspects:
+
+1. Simplicity: OpenChatML prioritizes simplicity and readability, making it easy for humans to understand and write conversational data in this format.
+2. Flexibility: The specification allows for optional metadata attributes to be associated with each message, providing flexibility without imposing strict requirements.
+3. Fill-in-the-Middle Tasks: OpenChatML provides built-in support for fill-in-the-middle tasks, which are commonly used in conversational AI for completion and generation tasks.
+4. Multi-File Sequences: OpenChatML introduces the concept of multi-file sequences, enabling the representation of conversations that span multiple files or documents.
+
+1.5 Use Cases
+
+OpenChatML is intended to be used in various conversational AI scenarios, including:
+
+1. Dialogue Systems: Representing and storing conversation data for training and evaluating dialogue systems.
+2. Chatbots: Building and deploying chatbots across different platforms, ensuring consistent handling of conversational data.
+3. Conversational Datasets: Creating, sharing, and analyzing conversational datasets for research and development purposes.
+4. Human-in-the-Loop Interactions: Representing and capturing interactions between human agents and AI systems for training and evaluation.
+
 ## 2. Tokens
 OpenChatML uses the following special tokens:
 
