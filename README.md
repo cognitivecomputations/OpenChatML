@@ -20,7 +20,7 @@ The purpose of OpenChatML is to address the following challenges in the conversa
 
 OpenChatML is designed to be a lightweight and flexible markup language for representing conversational data. It focuses on the core elements and structures necessary to capture the essence of conversations, while allowing for extensibility and customization.
 
-The specification defines the syntax and semantics of OpenChatML, including the special tokens, message structure, conversation structure, fill-in-the-middle tasks, and multi-file sequences. It also provides guidelines for parsing and generating OpenChatML data.
+The specification defines the syntax and semantics of OpenChatML, including the special tokens, message structure, conversation structure, fill-in-the-middle tasks, and multi-file sequences, and function calling. It also provides guidelines for parsing and generating OpenChatML data.
 
 ### 1.4 Comparison to Other Specifications
 
@@ -112,7 +112,202 @@ file3_content
 
 The `<|file_separator|>` token is used to demarcate the boundaries between content from different files while keeping them as part of the same overall sequence. This can be useful for tasks involving multiple input sources.
 
-## 8. Examples
+## 8. Function Calling
+OpenChatML supports function calling, allowing the model to interact with external tools and APIs. Function calling enables the model to perform specific tasks, retrieve information, and generate more accurate and relevant responses based on the available tools.  The design for function calling in OpenChatML is adapted from the [Hermes-Function-Calling](https://github.com/NousResearch/Hermes-Function-Calling) project, by Nous Research.
+
+### 8.1 Function Signature
+
+To enable function calling, the available functions or tools should be provided to the model within the `<tools>` and `</tools>` XML tags in the system message. The function signature is represented as a JSON object with the following properties:
+
+- `type`: Indicates the type of the tool, which should be "function".
+- `function`: An object representing the function details, containing:
+  - `name`: The name of the function.
+  - `description`: A brief description of what the function does.
+  - `parameters`: An object specifying the parameters of the function, following the JSON Schema format.
+
+Example function signature:
+
+```json
+<tools>
+{
+  "type": "function",
+  "function": {
+    "name": "get_stock_fundamentals",
+    "description": "Get fundamental data for a given stock symbol using yfinance API.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string"
+        }
+      },
+      "required": ["symbol"]
+    }
+  }
+}
+</tools>
+```
+
+### 8.2 Function Call
+
+To make a function call, the model should generate a JSON object within the `<tool_call>` and `</tool_call>` XML tags. The JSON object should follow the Pydantic model schema:
+
+```json
+{
+  "title": "FunctionCall",
+  "type": "object",
+  "properties": {
+    "arguments": {
+      "title": "Arguments",
+      "type": "object"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    }
+  },
+  "required": ["arguments", "name"]
+}
+```
+
+Example function call:
+
+```
+<tool_call>
+{"arguments": {"symbol": "TSLA"}, "name": "get_stock_fundamentals"}
+</tool_call>
+```
+
+### 8.3 Function Response
+
+After executing the function call, the response should be passed back to the model within the `<tool_response>` and `</tool_response>` XML tags. The response should be a JSON object containing the function name and the content of the response.
+
+Example function response:
+
+```
+<tool_response>
+{
+  "name": "get_stock_fundamentals",
+  "content": {
+    "symbol": "TSLA",
+    "company_name": "Tesla, Inc.",
+    "sector": "Consumer Cyclical",
+    "industry": "Auto Manufacturers",
+    "market_cap": 611384164352,
+    "pe_ratio": 49.604652,
+    "pb_ratio": 9.762013,
+    "dividend_yield": null,
+    "eps": 4.3,
+    "beta": 2.427,
+    "52_week_high": 299.29,
+    "52_week_low": 152.37
+  }
+}
+</tool_response>
+```
+
+### 8.4 Recursive Function Calls
+
+OpenChatML allows for recursive function calls, where the model can make multiple function calls in a single conversation turn. The model can generate multiple `<tool_call>` tags, and the corresponding `<tool_response>` tags should be provided in the same order.
+
+### 8.5 Example Conversation with Function Calling
+
+Here's an example conversation demonstrating function calling in OpenChatML:
+
+```
+<s>
+<|im_start|>system
+You are a function calling AI model. You are provided with function signatures within <tools></tools> XML tags. You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug into functions. Here are the available tools:
+<tools>
+{
+  "type": "function",
+  "function": {
+    "name": "get_stock_fundamentals",
+    "description": "Get fundamental data for a given stock symbol using yfinance API.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string"
+        }
+      },
+      "required": ["symbol"]
+    }
+  }
+}
+</tools>
+Use the following pydantic model json schema for each tool call you will make:
+{
+  "title": "FunctionCall",
+  "type": "object",
+  "properties": {
+    "arguments": {
+      "title": "Arguments", 
+      "type": "object"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    }
+  },
+  "required": ["arguments", "name"]
+}
+For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags as follows:
+<tool_call>
+{"arguments": <args-dict>, "name": <function-name>}
+</tool_call>
+<|im_end|>
+<|im_start|>user
+Fetch the stock fundamentals data for Tesla (TSLA)
+<|im_end|>
+<|im_start|>assistant
+<tool_call>
+{"arguments": {"symbol": "TSLA"}, "name": "get_stock_fundamentals"}
+</tool_call>
+<|im_end|>
+<|im_start|>tool
+<tool_response>
+{
+  "name": "get_stock_fundamentals",
+  "content": {
+    "symbol": "TSLA",
+    "company_name": "Tesla, Inc.",
+    "sector": "Consumer Cyclical", 
+    "industry": "Auto Manufacturers",
+    "market_cap": 611384164352,
+    "pe_ratio": 49.604652,
+    "pb_ratio": 9.762013,
+    "dividend_yield": null,
+    "eps": 4.3,
+    "beta": 2.427,
+    "52_week_high": 299.29,
+    "52_week_low": 152.37
+  }
+}
+</tool_response>
+<|im_end|>
+<|im_start|>assistant
+The stock fundamentals data for Tesla (TSLA) are as follows:
+- **Symbol**: TSLA  
+- **Company Name**: Tesla, Inc.
+- **Sector**: Consumer Cyclical
+- **Industry**: Auto Manufacturers
+- **Market Capitalization**: $611,384,164,352
+- **Price-to-Earnings Ratio (P/E Ratio)**: 49.60
+- **Price-to-Book Ratio (P/B Ratio)**: 9.76
+- **Dividend Yield**: N/A
+- **Earnings Per Share (EPS)**: $4.30
+- **Beta**: 2.427
+- **52-Week High**: $299.29
+- **52-Week Low**: $152.37
+
+This data provides key financial metrics and ratios that can help assess Tesla's stock performance and valuation. The high P/E and P/B ratios suggest that investors have high expectations for Tesla's future growth. The lack of a dividend yield indicates that Tesla is reinvesting its profits into the business rather than distributing them to shareholders. The high beta value implies that Tesla's stock is more volatile than the overall market.
+
+<|im_end|>
+</s>
+```
+
+## 9. Examples
 Here are a few examples of OpenChatML structures:
 
 Example conversation:
@@ -264,7 +459,7 @@ Completion:
 <|fim_suffix|> Despite their invisible interior, the presence of black holes can be inferred through their interaction with other matter and with electromagnetic radiation such as visible light. If there are other stars orbiting a black hole, their orbit can be used to determine the black hole's mass and location. Matter falling into a black hole can form an accretion disk, one of the brightest objects in the universe.
 ```
 
-## 9. Parsing and Generation
+## 10. Parsing and Generation
 When parsing OpenChatML, the following rules should be applied:
 - The `<s>`, `</s>`, `<|im_start|>`, `<|im_end|>`, `<|fim_prefix|>`, `<|fim_middle|>`, `<|fim_suffix|>`, and `<|file_separator|>` tokens are treated as special tokens and should not be considered part of the message content.
 - The `role` must be one of the predefined values: "system", "tool", "user", or "assistant".
@@ -272,6 +467,6 @@ When parsing OpenChatML, the following rules should be applied:
 
 When generating OpenChatML, the same structure and rules should be followed to ensure compatibility and consistency.
 
-## 10. References
+## 11. References
 - Fill In the Middle (FIM) https://arxiv.org/abs/2207.14255
 - Quiet Star (chain of thought) https://arxiv.org/abs/2403.09629
