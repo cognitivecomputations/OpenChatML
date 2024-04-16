@@ -107,6 +107,102 @@ And this is more content from the second file.
 Finally, this is the content from the third file.
 ```
 
+Here are some more comprehensive examples showcasing various features and use cases of OpenChatML:
+
+Example: Named roles and longer conversation
+```
+<s>
+<|im_start|>system name=GoalTracker
+You are an AI assistant that helps users track and achieve their goals.
+<|im_end|>
+<|im_start|>user name=Alice
+Hi, I need help staying motivated to reach my fitness goals. Any advice?
+<|im_end|>
+<|im_start|>assistant name=FitnessCoach
+Hi Alice! To stay motivated, try setting specific, measurable goals and tracking your progress. Celebrate small victories along the way. Remember why you started this journey and keep that in mind when things get tough. I'm here to support you every step of the way!
+<|im_end|>
+<|im_start|>user name=Alice  
+Thanks, that's helpful! Can you suggest a good workout routine for beginners?
+<|im_end|>
+<|im_start|>assistant name=FitnessCoach
+Absolutely! Here's a simple beginner-friendly workout routine:
+
+Monday: 30-minute brisk walk or jog
+Tuesday: 15 minutes of bodyweight exercises (squats, push-ups, lunges)
+Wednesday: Rest day or light stretching 
+Thursday: 30-minute bike ride or swim
+Friday: 15 minutes of bodyweight exercises
+Saturday: 30-minute yoga or Pilates session
+Sunday: Rest day
+
+Remember to warm up before and cool down after each workout. Listen to your body and don't push too hard too soon. Consistency is key!
+<|im_end|>
+<|im_start|>user name=Bob
+Hey, I couldn't help but overhear. I'm also trying to get into a fitness routine. Mind if I join the conversation?
+<|im_end|>  
+<|im_start|>assistant name=FitnessCoach
+Of course, Bob! The more, the merrier. Feel free to chime in with your own experiences and questions. We can all learn from and support each other on our fitness journeys.
+<|im_end|>
+</s>
+```
+
+Example: Fill-in-the-middle task
+```
+<|fim_prefix|>def fibonacci(n):
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    else:
+        fib = [0, 1]
+        <|fim_middle|><|fim_suffix|>
+        return fib
+
+# Test the function
+print(fibonacci(10))
+```
+
+Completion:
+```
+<|fim_prefix|>def fibonacci(n):
+    if n <= 0:  
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    else:
+        fib = [0, 1]
+        <|fim_middle|>for i in range(2, n):
+            fib.append(fib[i-1] + fib[i-2])
+        <|fim_suffix|>  
+        return fib
+
+# Test the function
+print(fibonacci(10))
+```
+
+Example 3: Multi-file sequence for document summarization
+```
+<|file_separator|>
+A black hole is a region of spacetime where gravity is so strong that nothing, not even light, can escape from it. The boundary of a black hole is called the event horizon, beyond which events cannot affect an outside observer. Black holes form when massive stars collapse at the end of their life cycle. 
+<|file_separator|>
+The first modern solution of general relativity that would characterize a black hole was found by Karl Schwarzschild in 1916. However, its interpretation as a region of space from which nothing can escape was first published by David Finkelstein in 1958. Long considered a mathematical curiosity, it was during the 1960s that theoretical work showed black holes were a generic prediction of general relativity.
+<|file_separator|>
+The discovery of neutron stars by Jocelyn Bell Burnell in 1967 sparked interest in gravitationally collapsed compact objects as a possible astrophysical reality. The first black hole known as such was Cygnus X-1, identified by several researchers independently in 1971. Black holes of stellar mass form when very massive stars collapse at the end of their life cycle.
+<|file_separator|>
+<|fim_prefix|><|fim_middle|><|fim_suffix|> Despite their invisible interior, the presence of black holes can be inferred through their interaction with other matter and with electromagnetic radiation such as visible light. If there are other stars orbiting a black hole, their orbit can be used to determine the black hole's mass and location. Matter falling into a black hole can form an accretion disk, one of the brightest objects in the universe.
+```
+
+Completion:
+```
+<|fim_prefix|>Black holes are regions of spacetime where gravity is extremely strong, preventing anything, including light, from escaping. They form when massive stars collapse at the end of their life cycle. The first modern solution describing black holes was found by Karl Schwarzschild in 1916, but their interpretation as inescapable regions was published by David Finkelstein in 1958.
+<|fim_middle|>The existence of black holes was confirmed with the discovery of Cygnus X-1 in 1971. Black holes can be detected through their interaction with nearby matter and radiation. Stars orbiting a black hole can reveal its mass and location, while matter falling into a black hole forms a bright accretion disk.
+<|fim_suffix|> Despite their invisible interior, the presence of black holes can be inferred through their interaction with other matter and with electromagnetic radiation such as visible light. If there are other stars orbiting a black hole, their orbit can be used to determine the black hole's mass and location. Matter falling into a black hole can form an accretion disk, one of the brightest objects in the universe.
+```
+
 ## 8. Parsing and Generation
 When parsing OpenChatML, the following rules should be applied:
 - The `<s>`, `</s>`, `<|im_start|>`, `<|im_end|>`, `<|fim_prefix|>`, `<|fim_middle|>`, `<|fim_suffix|>`, and `<|file_separator|>` tokens are treated as special tokens and should not be considered part of the message content.
