@@ -3,11 +3,11 @@
 ## 1. Introduction
 OpenChatML is a markup language designed for representing conversational data in a structured format. It provides a standardized way to encode chat messages, including the role of the speaker, the content of the message, and optional metadata such as the name of the speaker.
 
-1.1 Overview
+### 1.1 Overview
 
 This document defines OpenChatML, a markup language for representing and exchanging conversational data in a standardized format. OpenChatML provides a structured approach to encode chat messages, including the role of the speaker, the content of the message, and optional metadata.
 
-1.2 Purpose
+### 1.2 Purpose
 
 The purpose of OpenChatML is to address the following challenges in the conversational AI domain:
 
@@ -16,13 +16,13 @@ The purpose of OpenChatML is to address the following challenges in the conversa
 3. Limited expressiveness in capturing the nuances and context of conversations.
 4. Difficulty in extending and evolving existing formats to meet the changing needs of the conversational AI community.
 
-1.3 Scope
+### 1.3 Scope
 
 OpenChatML is designed to be a lightweight and flexible markup language for representing conversational data. It focuses on the core elements and structures necessary to capture the essence of conversations, while allowing for extensibility and customization.
 
 The specification defines the syntax and semantics of OpenChatML, including the special tokens, message structure, conversation structure, fill-in-the-middle tasks, and multi-file sequences. It also provides guidelines for parsing and generating OpenChatML data.
 
-1.4 Comparison to Other Specifications
+### 1.4 Comparison to Other Specifications
 
 OpenChatML differs from other specifications in the following aspects:
 
@@ -31,7 +31,7 @@ OpenChatML differs from other specifications in the following aspects:
 3. Fill-in-the-Middle Tasks: OpenChatML provides built-in support for fill-in-the-middle tasks, which are commonly used in conversational AI for completion and generation tasks.
 4. Multi-File Sequences: OpenChatML introduces the concept of multi-file sequences, enabling the representation of conversations that span multiple files or documents.
 
-1.5 Use Cases
+### 1.5 Use Cases
 
 OpenChatML is intended to be used in various conversational AI scenarios, including:
 
