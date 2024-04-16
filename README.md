@@ -1,4 +1,4 @@
-# OpenChatML v0.1 Specification
+# OpenChatML Specification v0.1
 
 ## 1. Introduction
 OpenChatML is a markup language designed for representing conversational data in a structured format. It provides a standardized way to encode chat messages, including the role of the speaker, the content of the message, and optional metadata such as the name of the speaker.
