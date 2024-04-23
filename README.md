@@ -53,6 +53,9 @@ OpenChatML uses the following special tokens:
 - `<|file_separator|>`: File Separator token, used to separate content from different files within the same sequence.
 - `<|startofthought|>`: Start of Thought token, indicating the beginning of a thought or rationale.
 - `<|endofthought|>`: End of Thought token, indicating the end of a thought or rationale.
+- `<|function_list|>`: Function List token, for providing available tools.
+- `<|function_output|>`: Function Output token, indicating output from a tool use.
+- `<|function_call|>`: Function Call token, indicating tool to call.
 
 ## 3. Message Structure
 Each message in OpenChatML is represented as follows:
@@ -128,7 +131,7 @@ To enable function calling, the available functions or tools should be provided 
 Example function signature:
 
 ```json
-<tools>
+<|function_list|>
 {
   "type": "function",
   "function": {
@@ -145,7 +148,6 @@ Example function signature:
     }
   }
 }
-</tools>
 ```
 
 ### 8.2 Function Call
@@ -173,9 +175,8 @@ To make a function call, the model should generate a JSON object within the `<to
 Example function call:
 
 ```
-<tool_call>
+<|function_call|>
 {"arguments": {"symbol": "TSLA"}, "name": "get_stock_fundamentals"}
-</tool_call>
 ```
 
 ### 8.3 Function Response
@@ -185,7 +186,7 @@ After executing the function call, the response should be passed back to the mod
 Example function response:
 
 ```
-<tool_response>
+<|function_output|>
 {
   "name": "get_stock_fundamentals",
   "content": {
@@ -203,12 +204,11 @@ Example function response:
     "52_week_low": 152.37
   }
 }
-</tool_response>
 ```
 
 ### 8.4 Recursive Function Calls
 
-OpenChatML allows for recursive function calls, where the model can make multiple function calls in a single conversation turn. The model can generate multiple `<tool_call>` tags, and the corresponding `<tool_response>` tags should be provided in the same order.
+OpenChatML allows for recursive function calls, where the model can make multiple function calls in a single conversation turn. The model can generate multiple `<|function_call|>` tags, and the corresponding `<|function_output|>` tags should be provided in the same order.
 
 ### 8.5 Example Conversation with Function Calling
 
@@ -218,7 +218,7 @@ Here's an example conversation demonstrating function calling in OpenChatML:
 <s>
 <|im_start|>system
 You are a function calling AI model. You are provided with function signatures within <tools></tools> XML tags. You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug into functions. Here are the available tools:
-<tools>
+<|function_list|>
 {
   "type": "function",
   "function": {
@@ -235,7 +235,7 @@ You are a function calling AI model. You are provided with function signatures w
     }
   }
 }
-</tools>
+<|function_list|>
 Use the following pydantic model json schema for each tool call you will make:
 {
   "title": "FunctionCall",
@@ -253,20 +253,18 @@ Use the following pydantic model json schema for each tool call you will make:
   "required": ["arguments", "name"]
 }
 For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags as follows:
-<tool_call>
+<|function_call|>
 {"arguments": <args-dict>, "name": <function-name>}
-</tool_call>
 <|im_end|>
 <|im_start|>user
 Fetch the stock fundamentals data for Tesla (TSLA)
 <|im_end|>
 <|im_start|>assistant
-<tool_call>
+<|function_call|>
 {"arguments": {"symbol": "TSLA"}, "name": "get_stock_fundamentals"}
-</tool_call>
 <|im_end|>
 <|im_start|>tool
-<tool_response>
+<|function_output|>
 {
   "name": "get_stock_fundamentals",
   "content": {
@@ -284,7 +282,6 @@ Fetch the stock fundamentals data for Tesla (TSLA)
     "52_week_low": 152.37
   }
 }
-</tool_response>
 <|im_end|>
 <|im_start|>assistant
 The stock fundamentals data for Tesla (TSLA) are as follows:
