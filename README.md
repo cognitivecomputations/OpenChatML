@@ -43,16 +43,18 @@ OpenChatML is intended to be used in various conversational AI scenarios, includ
 ## 2. Tokens
 OpenChatML uses the following special tokens:
 
-- `<s>`: Beginning of Sequence (BOS) token, indicating the start of a conversation.
-- `</s>`: End of Sequence (EOS) token, indicating the end of the conversation.
+- `[BOS]`: Rather than redefining it, we will use the same BOS token as the base model uses. This token indicates the start of a conversation.
+- `[EOS]`: Rather than redifining it, we will use the same EOS token as the base model uses. This token indicates the end of a conversation.
 - `<|im_start|>`: Start of Turn token, indicating the beginning of a new message within the conversation. 
 - `<|im_end|>`: End of Turn token, indicating the end of the current message.
 - `<|fim_prefix|>`: Before Cursor token, indicating the content before the cursor in a fill-in-the-middle task.
 - `<|fim_suffix|>`: After Cursor token, indicating the content after the cursor in a fill-in-the-middle task.
 - `<|fim_middle|>`: At Cursor token, indicating where the model should fill in content in a fill-in-the-middle task.
 - `<|file_separator|>`: File Separator token, used to separate content from different files within the same sequence.
-- `<|startofthought|>`: Start of Thought token, indicating the beginning of a thought or rationale.
-- `<|endofthought|>`: End of Thought token, indicating the end of a thought or rationale.
+- `<|reflect|>`,`<|introspect|>`,`<|reason|>`: flag tokens to indicate whether these blocks should be generated.
+- `<|start_reflect|>`, `<|end_reflect|>`: a block containing reflection on the user's position and intent.
+- `<|start_introspect|>`, `<|end_introspect|>`: a block containing introspection on the model's position and intent.
+- `<|start_reason|>`, `<|end_reason|>`: a block containing chain of thought required to solve the question.
 - `<|function_list|>`: Function List token, for providing available tools.
 - `<|function_output|>`: Function Output token, indicating output from a tool use.
 - `<|function_call|>`: Function Call token, indicating tool to call.
