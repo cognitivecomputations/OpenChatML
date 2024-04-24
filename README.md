@@ -73,12 +73,25 @@ message_content
 - `message_content`: The actual content of the message, which can span multiple lines.
 
 ## 4. Thought Structure
-OpenChatML introduces a new structure called the "thought block" to represent the chain of thought or reasoning steps that lead to a conclusion or response. This concept is inspired by the Quiet-STaR paper (Zelikman et al., 2022), which proposes a method for language models to generate rationales at each token to explain future text, improving their predictions. In OpenChatML, the thought block is enclosed within <|startofthought|> and <|endofthought|> tokens and contains the intermediate reasoning steps or considerations that the model uses to arrive at its final response. The purpose of the thought block is to provide insight into the model's decision-making process and to separate the reasoning from the conclusion. This structure allows for a clearer understanding of how the model generates its responses and can be useful for debugging, interpretability, and enhancing the model's performance on various tasks.
+OpenChatML introduces a new structure to represent reflection, introspection, and reason.
 
-Thoughts or rationales in OpenChatML are represented as follows:
+Example prompt:
 
 ```
-<|startofthought|>thought_content<|endofthought|>
+[BOS]<|im_start|>system
+You are a helpful AI assistant.<|reflect|><|introspect|><|reason|><|im_end|>
+<|im_start|>user
+I have here a closed box with the label Band-Aid printed on it. What do you suppose is inside the box?<|im_end|>
+<|im_start|>assistant
+```
+
+Example output:
+
+```
+<|start_reflect|>The user is asking a straightforward question about the likely contents of a labeled box. They seem curious but not emotionally invested in the answer. There is no apparent hidden agenda or ulterior motive behind the question.<|end_reflect|>
+<|start_introspect|>As an AI assistant, my goal is to provide helpful and informative responses to the user's questions. In this case, I do not have any strong feelings or opinions about the contents of the box. My intention is to make a reasonable inference based on the label and common knowledge.<|end_introspect|>
+<|start_reason|>The box has a "Band-Aid" label printed on it. Band-Aid is a well-known brand name for adhesive bandages and related first-aid products. When a box is labeled with a brand name, it very often contains that brand's products inside. Therefore, the most logical inference is that this box contains Band-Aid brand adhesive bandages.<|end_reason|>
+Based on the "Band-Aid" label printed on the box, it is very likely that the box contains Band-Aid brand adhesive bandages inside. Band-Aid is a famous brand name for this type of first-aid product. When a box has a brand name printed on the outside, it usually contains that brand's products on the inside. So while I cannot say with 100% certainty, I think it is a very reasonable assumption that you would find Band-Aid adhesive bandages if you opened up this labeled box.<|im_end|>[EOS]
 ```
 
 ## 5. Conversation Structure
