@@ -79,7 +79,7 @@ Reflection is analysis of the user's emotions and intentions.  Introspection is 
 
 This behavior will need to be trained into the model with SFT.
 
-Example prompt:
+Example:
 
 ```
 [BOS]<|im_start|>system
@@ -87,11 +87,6 @@ You are a helpful AI assistant.<|reflect|><|introspect|><|reason|><|im_end|>
 <|im_start|>user
 I have here a closed box with the label Band-Aid printed on it. What do you suppose is inside the box?<|im_end|>
 <|im_start|>assistant
-```
-
-Example output:
-
-```
 <|start_reflect|>The user is asking a straightforward question about the likely contents of a labeled box. They seem curious but not emotionally invested in the answer. There is no apparent hidden agenda or ulterior motive behind the question.<|end_reflect|>
 <|start_introspect|>As an AI assistant, my goal is to provide helpful and informative responses to the user's questions. In this case, I do not have any strong feelings or opinions about the contents of the box. My intention is to make a reasonable inference based on the label and common knowledge.<|end_introspect|>
 <|start_reason|>The box has a "Band-Aid" label printed on it. Band-Aid is a well-known brand name for adhesive bandages and related first-aid products. When a box is labeled with a brand name, it very often contains that brand's products inside. Therefore, the most logical inference is that this box contains Band-Aid brand adhesive bandages.<|end_reason|>
