@@ -73,7 +73,9 @@ message_content
 - `message_content`: The actual content of the message, which can span multiple lines.
 
 ## 4. Thought Structure
-OpenChatML introduces a new structure to represent reflection, introspection, and reason.
+OpenChatML introduces a new structure to represent reflection, introspection, and reason.  If the flags are present in the system prompt, that indicates to the model to generate the associated thought block.
+
+Reflection is analysis of the user's emotions and intentions.  Introspection is the model's analysis of its own emotions and intentions.  Reason is the chain of thought to solve problems.
 
 Example prompt:
 
