@@ -99,7 +99,7 @@ Based on the "Band-Aid" label printed on the box, it is very likely that the box
 ```
 
 ## 5. Conversation Structure
-A conversation in OpenChatML is represented as a sequence of messages, enclosed within `<s>` and `</s>` tokens:
+A conversation in OpenChatML is represented as a sequence of messages, enclosed within `[BOS]` and `[EOS]` tokens:
 
 ```
 [BOS]<|im_start|>role1 [name=<name1>]
