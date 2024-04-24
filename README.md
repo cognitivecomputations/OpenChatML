@@ -85,14 +85,14 @@ Thoughts or rationales in OpenChatML are represented as follows:
 A conversation in OpenChatML is represented as a sequence of messages, enclosed within `<s>` and `</s>` tokens:
 
 ```
-<s><|im_start|>role1 [name=<name1>]
+[BOS]<|im_start|>role1 [name=<name1>]
 message1
 <|im_end|>
 <|im_start|>role2 [name=<name2>]
 message2
 <|im_end|>
 ...
-</s>
+[EOS]
 ```
 
 ## 6. Fill-in-the-Middle Tasks
@@ -217,8 +217,7 @@ OpenChatML allows for recursive function calls, where the model can make multipl
 Here's an example conversation demonstrating function calling in OpenChatML:
 
 ```
-<s>
-<|im_start|>system
+[BOS]<|im_start|>system
 You are a function calling AI model. You are provided with function signatures within <tools></tools> XML tags. You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug into functions. Here are the available tools:
 <|function_list|>
 {
@@ -302,8 +301,7 @@ The stock fundamentals data for Tesla (TSLA) are as follows:
 
 This data provides key financial metrics and ratios that can help assess Tesla's stock performance and valuation. The high P/E and P/B ratios suggest that investors have high expectations for Tesla's future growth. The lack of a dividend yield indicates that Tesla is reinvesting its profits into the business rather than distributing them to shareholders. The high beta value implies that Tesla's stock is more volatile than the overall market.
 
-<|im_end|>
-</s>
+<|im_end|>[EOS]
 ```
 
 ## 9. Examples
@@ -311,46 +309,27 @@ Here are a few examples of OpenChatML structures:
 
 Example conversation:
 ```
-<s><|im_start|>user
+[BOS]<|im_start|>user
 Hello there, AI.
 <|im_end|>
 <|im_start|>assistant
 Hi. Nice to meet you.
-<|im_end|>
-</s>
+<|im_end|>[EOS]
 ```
 
 Example conversation with speaker name:
 ```
-<s><|im_start|>user name=Eric
+[BOS]<|im_start|>user name=Eric
 Hello there, AI.
 <|im_end|>
 <|im_start|>assistant
 Hi Eric. Nice to meet you.
-<|im_end|>
-</s>
+<|im_end|>[EOS]
 ```
 
 Example fill-in-the-middle task:
 ```
 <|fim_prefix|>The capital of France is <|fim_middle|><|fim_suffix|>, which is known for its famous Eiffel Tower.
-```
-
-Example with thought block:
-```
-<s><|im_start|>user
-What is 17 * 34?
-<|im_end|>
-<|im_start|>assistant
-<|startofthought|>To multiply 17 by 34, we can break it down:
-17 * 34 = 17 * (30 + 4)
-        = (17 * 30) + (17 * 4)
-        = 510 + 68
-        = 578
-<|endofthought|>
-17 * 34 = 578.
-<|im_end|>
-</s>
 ```
 
 Example multi-file sequence:
@@ -367,7 +346,7 @@ Here are some more comprehensive examples showcasing various features and use ca
 
 Example: Named roles and longer conversation
 ```
-<s><|im_start|>system name=GoalTracker
+[BOS]<|im_start|>system name=GoalTracker
 You are an AI assistant that helps users track and achieve their goals.
 <|im_end|>
 <|im_start|>user name=Alice
@@ -397,8 +376,7 @@ Hey, I couldn't help but overhear. I'm also trying to get into a fitness routine
 <|im_end|>  
 <|im_start|>assistant name=FitnessCoach
 Of course, Bob! The more, the merrier. Feel free to chime in with your own experiences and questions. We can all learn from and support each other on our fitness journeys.
-<|im_end|>
-</s>
+<|im_end|>[EOS]
 ```
 
 Example: Fill-in-the-middle task
@@ -460,7 +438,6 @@ Completion:
 
 ## 10. Parsing and Generation
 When parsing OpenChatML, the following rules should be applied:
-- The `<s>`, `</s>`, `<|im_start|>`, `<|im_end|>`, `<|fim_prefix|>`, `<|fim_middle|>`, `<|fim_suffix|>`, and `<|file_separator|>` tokens are treated as special tokens and should not be considered part of the message content.
 - The `role` must be one of the predefined values: "system", "tool", "user", or "assistant".
 - The `name` attribute is optional and should be parsed if present.
 
