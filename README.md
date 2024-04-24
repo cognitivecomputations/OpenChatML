@@ -77,6 +77,8 @@ OpenChatML introduces a new structure to represent reflection, introspection, an
 
 Reflection is analysis of the user's emotions and intentions.  Introspection is the model's analysis of its own emotions and intentions.  Reason is the chain of thought to solve problems.
 
+This behavior will need to be trained into the model with SFT.
+
 Example prompt:
 
 ```
